@@ -1,7 +1,7 @@
-package main.java.banco.controller;
+package banco.controller;
 
-import main.java.banco.model.ContaCorrenteModel;
-import main.java.banco.model.ContaModel;
+import banco.model.ContaCorrenteModel;
+import banco.model.ContaModel;
 
 import javax.swing.*;
 import java.awt.*;

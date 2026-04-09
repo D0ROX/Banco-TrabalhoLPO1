@@ -1,4 +1,4 @@
-package main.java.banco.model;
+package banco.model;
 
 public abstract class ContaModel implements ContaModelInterface {
     protected int numero;

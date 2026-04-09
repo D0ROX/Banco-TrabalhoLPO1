@@ -1,4 +1,4 @@
-package main.java.banco.model;
+package banco.model;
 
 public interface ContaModelInterface {
     boolean deposita(double valor);

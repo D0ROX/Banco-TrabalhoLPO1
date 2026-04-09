@@ -1,7 +1,7 @@
-package main.java.banco.controller;
+package banco.controller;
 
-import main.java.banco.model.ClienteModel;
-import main.java.banco.model.ContaModel;
+import banco.model.ClienteModel;
+import banco.model.ContaModel;
 
 import java.util.*;
 

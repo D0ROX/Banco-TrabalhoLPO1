@@ -1,4 +1,4 @@
-package main.java.banco.model;
+package banco.model;
 
 public class ContaCorrenteModel extends ContaModel {
     private double limite;

@@ -1,7 +1,7 @@
-package main.java.banco.view;
+package banco.view;
 
-import main.java.banco.controller.GerenciadorBancoControler;
-import main.java.banco.controller.TelaManipularContaControler;
+import banco.controller.GerenciadorBancoControler;
+import banco.controller.TelaManipularContaControler;
 
 import javax.swing.*;
 import java.awt.*;

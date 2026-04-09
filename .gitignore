@@ -10,3 +10,6 @@ Banco-Java/nbdist/
 
 # Arquivos de log em qualquer lugar
 *.log
+
+/.github/
+/.vscode/

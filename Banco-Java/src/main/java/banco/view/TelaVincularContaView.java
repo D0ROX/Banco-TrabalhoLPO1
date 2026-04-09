@@ -1,10 +1,10 @@
-package main.java.banco.view;
+package banco.view;
 
-import main.java.banco.controller.GerenciadorBancoControler;
-import main.java.banco.model.ClienteModel;
-import main.java.banco.model.ContaCorrenteModel;
-import main.java.banco.model.ContaInvestimentoModel;
-import main.java.banco.model.ContaModel;
+import banco.controller.GerenciadorBancoControler;
+import banco.model.ClienteModel;
+import banco.model.ContaCorrenteModel;
+import banco.model.ContaInvestimentoModel;
+import banco.model.ContaModel;
 
 import javax.swing.*;
 import java.awt.*;

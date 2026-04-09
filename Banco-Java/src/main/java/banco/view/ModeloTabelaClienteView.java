@@ -1,6 +1,6 @@
-package main.java.banco.view;
+package banco.view;
 
-import main.java.banco.model.ClienteModel;
+import banco.model.ClienteModel;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;

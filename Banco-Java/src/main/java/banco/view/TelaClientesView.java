@@ -1,7 +1,7 @@
-package main.java.banco.view;
+package banco.view;
 
-import main.java.banco.controller.GerenciadorBancoControler;
-import main.java.banco.model.ClienteModel;
+import banco.controller.GerenciadorBancoControler;
+import banco.model.ClienteModel;
 
 import javax.swing.*;
 import java.awt.*;
