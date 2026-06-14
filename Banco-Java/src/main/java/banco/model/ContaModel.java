@@ -12,9 +12,18 @@ public abstract class ContaModel implements ContaModelInterface {
         this.saldo = depositoInicial;
     }
 
+    public ContaModel(int numero, ClienteModel dono, double saldo) {
+        this.numero = numero;
+        this.dono = dono;
+        this.saldo = saldo;
+        if (numero >= proximoNumero) {
+            proximoNumero = numero + 1;
+        }
+    }
+
     @Override
     public boolean deposita(double valor) {
-        if (valor < 0) {
+        if (valor <= 0) {
             return false;
         }
         saldo += valor;
@@ -23,7 +32,7 @@ public abstract class ContaModel implements ContaModelInterface {
 
     @Override
     public boolean saca(double valor) {
-        if(valor <= 0 && saldo <= valor){
+        if (valor <= 0 || valor > saldo) {
             return false;
         }
 
@@ -37,6 +46,17 @@ public abstract class ContaModel implements ContaModelInterface {
     public int getNumero() { return numero; }
     @Override
     public double getSaldo() { return saldo; }
+
+    public void setNumero(int numero) {
+        this.numero = numero;
+        if (numero >= proximoNumero) {
+            proximoNumero = numero + 1;
+        }
+    }
+
+    public void setDono(ClienteModel dono) {
+        this.dono = dono;
+    }
 
     @Override
     public abstract void remunera();

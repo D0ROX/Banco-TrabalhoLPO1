@@ -1,7 +1,6 @@
 package banco.view;
 
 import banco.controller.GerenciadorBancoControler;
-import banco.controller.TelaManipularContaControler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -58,14 +57,22 @@ public class TelaPrincipalView extends JFrame {
     }
 
     private void abrirTelaManipularConta() {
-        TelaManipularContaControler tela = new TelaManipularContaControler(banco);
+        TelaManipularContaView tela = new TelaManipularContaView(banco);
         tela.setVisible(true);
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            TelaPrincipalView tela = new TelaPrincipalView();
-            tela.setVisible(true);
+            try {
+                TelaPrincipalView tela = new TelaPrincipalView();
+                tela.setVisible(true);
+            } catch (IllegalStateException ex) {
+                JOptionPane.showMessageDialog(null,
+                        "Nao foi possivel conectar ao banco de dados.\n" +
+                                "Execute o script bd/schema.sql e confira as configuracoes de conexao.",
+                        "Erro de conexao",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         });
     }
 }

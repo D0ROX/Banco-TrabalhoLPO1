@@ -3,24 +3,37 @@ package banco.view;
 import banco.controller.GerenciadorBancoControler;
 import banco.model.ClienteModel;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.List;
 
 public class TelaClientesView extends JFrame {
     private final GerenciadorBancoControler banco;
+
     private JTable tabela;
     private ModeloTabelaClienteView modelo;
-    private JTextField txtNome, txtSobrenome, txtRg, txtCpf, txtEndereco;
+    private JTextField txtNome;
+    private JTextField txtSobrenome;
+    private JTextField txtRg;
+    private JTextField txtCpf;
+    private JTextField txtEndereco;
     private JTextField txtBusca;
-    private JComboBox<String> cbTipoBusca, cbOrdenacao;
-
-    private JButton btnAdicionar, btnAtualizar, btnExcluir, btnLimpar;
-    private JButton btnBuscar, btnMostrarTodos, btnOrdenar;
-
-    private JPanel painelFormulario;
-    private java.awt.event.AWTEventListener listenerGlobal;
+    private JComboBox<String> cbTipoBusca;
+    private JComboBox<String> cbOrdenacao;
 
     public TelaClientesView(GerenciadorBancoControler banco) {
         this.banco = banco;
@@ -33,54 +46,17 @@ public class TelaClientesView extends JFrame {
         JPanel painelPrincipal = new JPanel(new BorderLayout(10, 10));
         painelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        painelFormulario = criarPainelFormulario();
-        JPanel painelTabela = criarPainelTabela();
-        JPanel painelBusca = criarPainelBusca();
-
-        painelPrincipal.add(painelFormulario, BorderLayout.NORTH);
-        painelPrincipal.add(painelTabela, BorderLayout.CENTER);
-        painelPrincipal.add(painelBusca, BorderLayout.SOUTH);
+        painelPrincipal.add(criarPainelFormulario(), BorderLayout.NORTH);
+        painelPrincipal.add(criarPainelTabela(), BorderLayout.CENTER);
+        painelPrincipal.add(criarPainelBusca(), BorderLayout.SOUTH);
 
         setContentPane(painelPrincipal);
-
-        listenerGlobal = evento -> {
-            if (!(evento instanceof java.awt.event.MouseEvent)) return;
-            java.awt.event.MouseEvent me = (java.awt.event.MouseEvent) evento;
-            if (me.getID() != java.awt.event.MouseEvent.MOUSE_PRESSED) return;
-
-            Window janelaDoEvento = SwingUtilities.getWindowAncestor((Component) me.getSource());
-            if (janelaDoEvento != this) return;
-
-            Component origem = (Component) me.getSource();
-
-            if (SwingUtilities.isDescendingFrom(origem, tabela)) return;
-
-            if (SwingUtilities.isDescendingFrom(origem, painelFormulario)) return;
-
-            if (origem instanceof JButton) return;
-            Component atual = origem;
-            while (atual != null) {
-                if (atual instanceof JButton) return;
-                atual = atual.getParent();
-            }
-
-            limparSelecaoTabela();
-        };
-        Toolkit.getDefaultToolkit().addAWTEventListener(listenerGlobal, AWTEvent.MOUSE_EVENT_MASK);
-    }
-
-    @Override
-    public void dispose() {
-        if (listenerGlobal != null) {
-            Toolkit.getDefaultToolkit().removeAWTEventListener(listenerGlobal);
-            listenerGlobal = null;
-        }
-        super.dispose();
     }
 
     private JPanel criarPainelFormulario() {
         JPanel painel = new JPanel(new GridBagLayout());
         painel.setBorder(BorderFactory.createTitledBorder("Dados do Cliente"));
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -92,52 +68,48 @@ public class TelaClientesView extends JFrame {
         txtCpf = new JTextField(15);
         txtEndereco = new JTextField(30);
 
-        gbc.gridx = 0; gbc.gridy = 0;
-        painel.add(new JLabel("Nome:"), gbc);
-        gbc.gridx = 1;
-        painel.add(txtNome, gbc);
+        adicionarCampo(painel, gbc, "Nome:", txtNome, 0, 0, 1);
+        adicionarCampo(painel, gbc, "Sobrenome:", txtSobrenome, 2, 0, 1);
+        adicionarCampo(painel, gbc, "RG:", txtRg, 0, 1, 1);
+        adicionarCampo(painel, gbc, "CPF:", txtCpf, 2, 1, 1);
+        adicionarCampo(painel, gbc, "Endereco:", txtEndereco, 0, 2, 3);
 
-        gbc.gridx = 2;
-        painel.add(new JLabel("Sobrenome:"), gbc);
-        gbc.gridx = 3;
-        painel.add(txtSobrenome, gbc);
+        gbc.gridwidth = 1;
+        gbc.gridy = 3;
 
-        gbc.gridx = 0; gbc.gridy = 1;
-        painel.add(new JLabel("RG:"), gbc);
-        gbc.gridx = 1;
-        painel.add(txtRg, gbc);
-
-        gbc.gridx = 2;
-        painel.add(new JLabel("CPF:"), gbc);
-        gbc.gridx = 3;
-        painel.add(txtCpf, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 2;
-        painel.add(new JLabel("Endereço:"), gbc);
-        gbc.gridx = 1; gbc.gridwidth = 3;
-        painel.add(txtEndereco, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 1;
-        btnAdicionar = new JButton("Adicionar");
+        JButton btnAdicionar = new JButton("Adicionar");
         btnAdicionar.addActionListener(e -> adicionarCliente());
+        gbc.gridx = 0;
         painel.add(btnAdicionar, gbc);
 
-        gbc.gridx = 1;
-        btnAtualizar = new JButton("Atualizar");
+        JButton btnAtualizar = new JButton("Atualizar");
         btnAtualizar.addActionListener(e -> atualizarCliente());
+        gbc.gridx = 1;
         painel.add(btnAtualizar, gbc);
 
-        gbc.gridx = 2;
-        btnExcluir = new JButton("Excluir");
+        JButton btnExcluir = new JButton("Excluir");
         btnExcluir.addActionListener(e -> excluirCliente());
+        gbc.gridx = 2;
         painel.add(btnExcluir, gbc);
 
-        gbc.gridx = 3;
-        btnLimpar = new JButton("Limpar");
+        JButton btnLimpar = new JButton("Limpar");
         btnLimpar.addActionListener(e -> limparCampos());
+        gbc.gridx = 3;
         painel.add(btnLimpar, gbc);
 
         return painel;
+    }
+
+    private void adicionarCampo(JPanel painel, GridBagConstraints gbc, String rotulo,
+                                JTextField campo, int coluna, int linha, int larguraCampo) {
+        gbc.gridx = coluna;
+        gbc.gridy = linha;
+        gbc.gridwidth = 1;
+        painel.add(new JLabel(rotulo), gbc);
+
+        gbc.gridx = coluna + 1;
+        gbc.gridwidth = larguraCampo;
+        painel.add(campo, gbc);
     }
 
     private JPanel criarPainelTabela() {
@@ -146,27 +118,20 @@ public class TelaClientesView extends JFrame {
 
         modelo = new ModeloTabelaClienteView(banco.getClientes());
         tabela = new JTable(modelo);
-
         tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
         tabela.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                int linha = tabela.getSelectedRow();
-                if (linha != -1) {
-                    preencherFormulario(linha);
-                }
+            if (!e.getValueIsAdjusting() && tabela.getSelectedRow() >= 0) {
+                preencherFormulario(tabela.getSelectedRow());
             }
         });
 
-        JScrollPane scrollPane = new JScrollPane(tabela);
-        painel.add(scrollPane, BorderLayout.CENTER);
-
+        painel.add(new JScrollPane(tabela), BorderLayout.CENTER);
         return painel;
     }
 
     private JPanel criarPainelBusca() {
         JPanel painel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        painel.setBorder(BorderFactory.createTitledBorder("Busca e Ordenação"));
+        painel.setBorder(BorderFactory.createTitledBorder("Busca e Ordenacao"));
 
         painel.add(new JLabel("Buscar por:"));
         cbTipoBusca = new JComboBox<>(new String[]{"Nome", "Sobrenome", "RG", "CPF"});
@@ -175,122 +140,126 @@ public class TelaClientesView extends JFrame {
         txtBusca = new JTextField(20);
         painel.add(txtBusca);
 
-        btnBuscar = new JButton("Buscar");
+        JButton btnBuscar = new JButton("Buscar");
         btnBuscar.addActionListener(e -> buscarClientes());
         painel.add(btnBuscar);
 
-        btnMostrarTodos = new JButton("Mostrar Todos");
+        JButton btnMostrarTodos = new JButton("Mostrar Todos");
         btnMostrarTodos.addActionListener(e -> atualizarTabela(banco.getClientes()));
         painel.add(btnMostrarTodos);
 
         painel.add(new JLabel(" | Ordenar por:"));
-        cbOrdenacao = new JComboBox<>(new String[]{"Nome", "Sobrenome"});
+        cbOrdenacao = new JComboBox<>(new String[]{"Nome", "Sobrenome", "Saldo"});
         painel.add(cbOrdenacao);
 
-        btnOrdenar = new JButton("Ordenar");
+        JButton btnOrdenar = new JButton("Ordenar");
         btnOrdenar.addActionListener(e -> ordenarClientes());
         painel.add(btnOrdenar);
 
         return painel;
     }
 
-    private void limparSelecaoTabela() {
-        if (tabela != null) {
-            tabela.clearSelection();
-        }
-    }
-
     private void adicionarCliente() {
-        if (!validarCampos()) return;
+        if (!validarCampos()) {
+            return;
+        }
 
-        String nome = txtNome.getText();
-        String sobrenome = txtSobrenome.getText();
-        String rg = txtRg.getText();
-        String cpf = txtCpf.getText();
-        String endereco = txtEndereco.getText();
+        String nome = txtNome.getText().trim();
+        String sobrenome = txtSobrenome.getText().trim();
+        String rg = txtRg.getText().trim();
+        String cpf = txtCpf.getText().trim();
+        String endereco = txtEndereco.getText().trim();
 
         if (banco.existeNomeSobrenome(nome, sobrenome)) {
-            JOptionPane.showMessageDialog(this, "Já existe cliente com o mesmo Nome e Sobrenome.");
+            JOptionPane.showMessageDialog(this, "Ja existe cliente com o mesmo nome e sobrenome.");
             return;
         }
         if (banco.existeRg(rg)) {
-            JOptionPane.showMessageDialog(this, "Já existe cliente com o mesmo RG.");
+            JOptionPane.showMessageDialog(this, "Ja existe cliente com o mesmo RG.");
             return;
         }
         if (banco.existeCpf(cpf)) {
-            JOptionPane.showMessageDialog(this, "Já existe cliente com o mesmo CPF.");
+            JOptionPane.showMessageDialog(this, "Ja existe cliente com o mesmo CPF.");
             return;
         }
 
-        ClienteModel cliente = new ClienteModel(nome, sobrenome, rg, cpf, endereco);
-        banco.adicionarCliente(cliente);
-        atualizarTabela(banco.getClientes());
-        limparCampos();
-        JOptionPane.showMessageDialog(this, "Cliente adicionado com sucesso!");
+        try {
+            banco.adicionarCliente(new ClienteModel(nome, sobrenome, rg, cpf, endereco));
+            atualizarTabela(banco.getClientes());
+            limparCampos();
+            JOptionPane.showMessageDialog(this, "Cliente adicionado com sucesso!");
+        } catch (IllegalStateException ex) {
+            mostrarErroBanco();
+        }
     }
 
     private void atualizarCliente() {
         int linha = tabela.getSelectedRow();
-        if (linha == -1) {
+        if (linha < 0) {
             JOptionPane.showMessageDialog(this, "Selecione um cliente na tabela para atualizar!");
             return;
         }
-        if (!validarCampos()) return;
+        if (!validarCampos()) {
+            return;
+        }
 
         ClienteModel clienteAntigo = modelo.getCliente(linha);
-
-        String nome = txtNome.getText();
-        String sobrenome = txtSobrenome.getText();
-        String rg = txtRg.getText();
-        String cpf = txtCpf.getText();
-        String endereco = txtEndereco.getText();
+        String nome = txtNome.getText().trim();
+        String sobrenome = txtSobrenome.getText().trim();
+        String rg = txtRg.getText().trim();
+        String cpf = txtCpf.getText().trim();
+        String endereco = txtEndereco.getText().trim();
 
         if (banco.existeNomeSobrenomeEmOutro(nome, sobrenome, clienteAntigo)) {
-            JOptionPane.showMessageDialog(this, "Já existe outro cliente com este nome.");
+            JOptionPane.showMessageDialog(this, "Ja existe outro cliente com este nome.");
             return;
         }
         if (banco.existeRgEmOutro(rg, clienteAntigo)) {
-            JOptionPane.showMessageDialog(this, "Já existe outro cliente com este RG.");
+            JOptionPane.showMessageDialog(this, "Ja existe outro cliente com este RG.");
             return;
         }
         if (banco.existeCpfEmOutro(cpf, clienteAntigo)) {
-            JOptionPane.showMessageDialog(this, "Já existe outro cliente com este CPF.");
+            JOptionPane.showMessageDialog(this, "Ja existe outro cliente com este CPF.");
             return;
         }
 
-        ClienteModel clienteNovo = new ClienteModel(nome, sobrenome, rg, cpf, endereco);
-        banco.atualizarCliente(clienteAntigo, clienteNovo);
-        atualizarTabela(banco.getClientes());
-        limparCampos();
-        JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!");
+        try {
+            ClienteModel clienteNovo = new ClienteModel(nome, sobrenome, rg, cpf, endereco);
+            banco.atualizarCliente(clienteAntigo, clienteNovo);
+            atualizarTabela(banco.getClientes());
+            limparCampos();
+            JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!");
+        } catch (IllegalStateException ex) {
+            mostrarErroBanco();
+        }
     }
 
     private void excluirCliente() {
-        int[] linhas = tabela.getSelectedRows();
-        if (linhas == null || linhas.length == 0) {
-            JOptionPane.showMessageDialog(this, "Selecione um ou mais clientes para excluir!");
+        int linha = tabela.getSelectedRow();
+        if (linha < 0) {
+            JOptionPane.showMessageDialog(this, "Selecione um cliente para excluir!");
             return;
         }
 
+        ClienteModel cliente = modelo.getCliente(linha);
         int resposta = JOptionPane.showConfirmDialog(this,
-                "Excluir " + linhas.length + " cliente(s)?\nContas vinculadas serão removidas.",
-                "Confirmar Exclusão",
+                "Excluir este cliente?\nTodas as contas vinculadas serao apagadas.",
+                "Confirmar Exclusao",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
 
-        if (resposta != JOptionPane.YES_OPTION) return;
-
-        List<ClienteModel> aRemover = new ArrayList<>();
-        for (int linha : linhas) {
-            aRemover.add(modelo.getCliente(linha));
-        }
-        for (ClienteModel c : aRemover) {
-            banco.removerCliente(c);
+        if (resposta != JOptionPane.YES_OPTION) {
+            return;
         }
 
-        atualizarTabela(banco.getClientes());
-        limparCampos();
-        JOptionPane.showMessageDialog(this, "Exclusão concluída!");
+        try {
+            banco.removerCliente(cliente);
+            atualizarTabela(banco.getClientes());
+            limparCampos();
+            JOptionPane.showMessageDialog(this, "Cliente excluido com sucesso!");
+        } catch (IllegalStateException ex) {
+            mostrarErroBanco();
+        }
     }
 
     private void buscarClientes() {
@@ -300,40 +269,36 @@ public class TelaClientesView extends JFrame {
             return;
         }
 
-        String tipoBusca = (String) cbTipoBusca.getSelectedItem();
-        List<ClienteModel> resultado;
+        try {
+            List<ClienteModel> resultado = switch ((String) cbTipoBusca.getSelectedItem()) {
+                case "Nome" -> banco.buscarPorNome(textoBusca);
+                case "Sobrenome" -> banco.buscarPorSobrenome(textoBusca);
+                case "RG" -> {
+                    ClienteModel cliente = banco.buscarPorRg(textoBusca);
+                    yield cliente == null ? List.of() : List.of(cliente);
+                }
+                case "CPF" -> {
+                    ClienteModel cliente = banco.buscarPorCpf(textoBusca);
+                    yield cliente == null ? List.of() : List.of(cliente);
+                }
+                default -> banco.getClientes();
+            };
 
-        switch (tipoBusca) {
-            case "Nome":
-                resultado = banco.buscarPorNome(textoBusca);
-                break;
-            case "Sobrenome":
-                resultado = banco.buscarPorSobrenome(textoBusca);
-                break;
-            case "RG":
-                ClienteModel c1 = banco.buscarPorRg(textoBusca);
-                resultado = c1 != null ? List.of(c1) : List.of();
-                break;
-            case "CPF":
-                ClienteModel c2 = banco.buscarPorCpf(textoBusca);
-                resultado = c2 != null ? List.of(c2) : List.of();
-                break;
-            default:
-                resultado = banco.getClientes();
+            if (resultado.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Nenhum cliente encontrado!");
+            }
+            atualizarTabela(resultado);
+        } catch (IllegalStateException ex) {
+            mostrarErroBanco();
         }
-
-        if (resultado.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Nenhum cliente encontrado!");
-        }
-        atualizarTabela(resultado);
     }
 
     private void ordenarClientes() {
-        String tipoOrdenacao = (String) cbOrdenacao.getSelectedItem();
-        List<ClienteModel> ordenados =
-                "Nome".equals(tipoOrdenacao)
-                        ? banco.ordenarPorNome()
-                        : banco.ordenarPorSobrenome();
+        List<ClienteModel> ordenados = switch ((String) cbOrdenacao.getSelectedItem()) {
+            case "Nome" -> banco.ordenarPorNome();
+            case "Sobrenome" -> banco.ordenarPorSobrenome();
+            default -> banco.ordenarPorSaldo();
+        };
         atualizarTabela(ordenados);
     }
 
@@ -352,17 +317,15 @@ public class TelaClientesView extends JFrame {
         txtRg.setText("");
         txtCpf.setText("");
         txtEndereco.setText("");
-        if (tabela != null) {
-            tabela.clearSelection();
-        }
+        tabela.clearSelection();
     }
 
     private boolean validarCampos() {
-        if (txtNome.getText().trim().isEmpty() ||
-                txtSobrenome.getText().trim().isEmpty() ||
-                txtRg.getText().trim().isEmpty() ||
-                txtCpf.getText().trim().isEmpty() ||
-                txtEndereco.getText().trim().isEmpty()) {
+        if (txtNome.getText().trim().isEmpty()
+                || txtSobrenome.getText().trim().isEmpty()
+                || txtRg.getText().trim().isEmpty()
+                || txtCpf.getText().trim().isEmpty()
+                || txtEndereco.getText().trim().isEmpty()) {
 
             JOptionPane.showMessageDialog(this, "Todos os campos devem ser preenchidos!");
             return false;
@@ -372,5 +335,12 @@ public class TelaClientesView extends JFrame {
 
     private void atualizarTabela(List<ClienteModel> clientes) {
         modelo.setListaClientes(clientes);
+    }
+
+    private void mostrarErroBanco() {
+        JOptionPane.showMessageDialog(this,
+                "Erro ao acessar o banco de dados.",
+                "Erro",
+                JOptionPane.ERROR_MESSAGE);
     }
 }

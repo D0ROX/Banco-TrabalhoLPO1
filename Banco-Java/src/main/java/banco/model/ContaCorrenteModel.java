@@ -8,6 +8,11 @@ public class ContaCorrenteModel extends ContaModel {
         this.limite = limite;
     }
 
+    public ContaCorrenteModel(int numero, ClienteModel dono, double saldo, double limite) {
+        super(numero, dono, saldo);
+        this.limite = limite;
+    }
+
     public double getLimite() { return limite; }
 
     @Override
