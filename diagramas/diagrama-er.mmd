@@ -1,0 +1,20 @@
+erDiagram
+    CLIENTE ||--o| CONTA : possui
+
+    CLIENTE {
+        varchar cpf PK
+        varchar nome
+        varchar sobrenome
+        varchar rg UK
+        varchar endereco
+    }
+
+    CONTA {
+        int numero PK
+        varchar cliente_cpf FK
+        varchar tipo
+        decimal saldo
+        decimal limite
+        decimal montante_minimo
+        decimal deposito_minimo
+    }

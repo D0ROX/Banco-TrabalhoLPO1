@@ -1,0 +1,80 @@
+classDiagram
+    class ClienteModel {
+        -String nome
+        -String sobrenome
+        -String rg
+        -String cpf
+        -String endereco
+        +compareTo(ClienteModel outro) int
+    }
+
+    class ContaModelInterface {
+        <<interface>>
+        +deposita(double valor) boolean
+        +saca(double valor) boolean
+        +getDono() ClienteModel
+        +getNumero() int
+        +getSaldo() double
+        +remunera() void
+    }
+
+    class ContaModel {
+        <<abstract>>
+        #int numero
+        #double saldo
+        #ClienteModel dono
+        +deposita(double valor) boolean
+        +saca(double valor) boolean
+        +remunera() void
+    }
+
+    class ContaCorrenteModel {
+        -double limite
+        +saca(double valor) boolean
+        +remunera() void
+    }
+
+    class ContaInvestimentoModel {
+        -double montanteMinimo
+        -double depositoMinimo
+        +deposita(double valor) boolean
+        +saca(double valor) boolean
+        +remunera() void
+    }
+
+    class GerenciadorBancoControler {
+        +adicionarCliente(ClienteModel cliente) void
+        +atualizarCliente(ClienteModel antigo, ClienteModel novo) void
+        +removerCliente(ClienteModel cliente) void
+        +criarContaCorrente(ClienteModel cliente, double deposito, double limite) ContaModel
+        +criarContaInvestimento(ClienteModel cliente, double deposito, double montante, double minimo) ContaModel
+        +depositar(String cpf, double valor) boolean
+        +sacar(String cpf, double valor) boolean
+        +remunerar(String cpf) boolean
+    }
+
+    class ClienteDAO {
+        <<interface>>
+    }
+
+    class ContaDAO {
+        <<interface>>
+    }
+
+    class TelaPrincipalView
+    class TelaClientesView
+    class TelaVincularContaView
+    class TelaManipularContaView
+    class ModeloTabelaClienteView
+
+    ContaModelInterface <|.. ContaModel
+    ContaModel <|-- ContaCorrenteModel
+    ContaModel <|-- ContaInvestimentoModel
+    ContaModel --> ClienteModel
+    GerenciadorBancoControler --> ClienteDAO
+    GerenciadorBancoControler --> ContaDAO
+    TelaPrincipalView --> GerenciadorBancoControler
+    TelaClientesView --> GerenciadorBancoControler
+    TelaVincularContaView --> GerenciadorBancoControler
+    TelaManipularContaView --> GerenciadorBancoControler
+    ModeloTabelaClienteView --> ClienteModel
