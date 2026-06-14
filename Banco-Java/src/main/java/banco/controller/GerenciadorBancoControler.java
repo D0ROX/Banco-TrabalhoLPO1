@@ -146,6 +146,17 @@ public class GerenciadorBancoControler {
         return ordenados;
     }
 
+    public List<ClienteModel> ordenarPorSaldo() {
+        List<ClienteModel> ordenados = new ArrayList<>(clientes);
+        ordenados.sort((c1, c2) -> Double.compare(saldoCliente(c2), saldoCliente(c1)));
+        return ordenados;
+    }
+
+    private double saldoCliente(ClienteModel cliente) {
+        ContaModel conta = contas.get(cliente.getCpf());
+        return conta == null ? 0.0 : conta.getSaldo();
+    }
+
     public void adicionarConta(String cpf, ContaModel conta) {
         contas.put(cpf, conta);
     }

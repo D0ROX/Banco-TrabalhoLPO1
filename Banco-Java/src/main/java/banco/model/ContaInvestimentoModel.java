@@ -11,6 +11,13 @@ public class ContaInvestimentoModel extends ContaModel {
         this.depositoMinimo = depositoMinimo;
     }
 
+    public ContaInvestimentoModel(int numero, ClienteModel dono, double saldo,
+                                  double montanteMinimo, double depositoMinimo) {
+        super(numero, dono, saldo);
+        this.montanteMinimo = montanteMinimo;
+        this.depositoMinimo = depositoMinimo;
+    }
+
     public double getMontanteMinimo() { return montanteMinimo; }
     public double getDepositoMinimo() { return depositoMinimo; }
 
@@ -26,8 +33,7 @@ public class ContaInvestimentoModel extends ContaModel {
     public boolean saca(double valor) {
         if (valor <= 0) return false;
         if (saldo - valor >= montanteMinimo) {
-            saldo -= valor;
-            return true;
+            return super.saca(valor);
         }
         return false;
     }
