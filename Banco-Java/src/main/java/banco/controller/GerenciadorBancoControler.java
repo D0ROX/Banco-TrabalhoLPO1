@@ -190,7 +190,7 @@ public class GerenciadorBancoControler {
         return conta == null ? 0.0 : conta.getSaldo();
     }
 
-    public void adicionarConta(String cpf, ContaModel conta) {
+    private void adicionarConta(String cpf, ContaModel conta) {
         try {
             if (contaDAO.salvar(conta)) {
                 contas.put(cpf, conta);
