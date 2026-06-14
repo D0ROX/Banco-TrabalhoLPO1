@@ -71,22 +71,29 @@ public class GerenciadorBancoControler {
     public boolean existeCpfEmOutro(String cpf, ClienteModel ignorar) {
         String alvo = normalizar(cpf);
         return clientes.stream().anyMatch(cliente ->
-                cliente != ignorar && normalizar(cliente.getCpf()).equals(alvo));
+                !mesmoCliente(cliente, ignorar) && normalizar(cliente.getCpf()).equals(alvo));
     }
 
     public boolean existeRgEmOutro(String rg, ClienteModel ignorar) {
         String alvo = normalizar(rg);
         return clientes.stream().anyMatch(cliente ->
-                cliente != ignorar && normalizar(cliente.getRg()).equals(alvo));
+                !mesmoCliente(cliente, ignorar) && normalizar(cliente.getRg()).equals(alvo));
     }
 
     public boolean existeNomeSobrenomeEmOutro(String nome, String sobrenome, ClienteModel ignorar) {
         String nomeNormalizado = normalizar(nome);
         String sobrenomeNormalizado = normalizar(sobrenome);
         return clientes.stream().anyMatch(cliente ->
-                cliente != ignorar
+                !mesmoCliente(cliente, ignorar)
                         && normalizar(cliente.getNome()).equals(nomeNormalizado)
                         && normalizar(cliente.getSobrenome()).equals(sobrenomeNormalizado));
+    }
+
+    private boolean mesmoCliente(ClienteModel cliente, ClienteModel outro) {
+        if (cliente == null || outro == null) {
+            return false;
+        }
+        return normalizar(cliente.getCpf()).equals(normalizar(outro.getCpf()));
     }
 
     public void adicionarCliente(ClienteModel cliente) {
